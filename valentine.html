@@ -1,39 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Please Say Yes? 🥺</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <style>
-        body { background-color: #ffdeeb; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; overflow: hidden; touch-action: none; flex-direction: column; }
-        #timer { color: #e91e63; font-weight: bold; margin-bottom: 10px; font-size: 0.9rem; background: white; padding: 5px 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        #card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; width: 85%; max-width: 350px; z-index: 10; }
-        img { width: 100%; max-width: 180px; border-radius: 15px; margin-bottom: 10px; }
-        h1 { color: #e91e63; font-size: 1.3rem; margin: 10px 0; }
-        #persuasion { color: #666; font-size: 0.85rem; font-style: italic; min-height: 45px; display: flex; align-items: center; justify-content: center; padding: 0 10px; }
-        .buttons { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; min-height: 120px; }
-        button { padding: 12px 20px; font-size: 1rem; font-weight: bold; border: none; border-radius: 50px; cursor: pointer; transition: transform 0.1s; }
-        #yesBtn { background: #4caf50; color: white; z-index: 1000; }
-        #noBtn { background: #f44336; color: white; position: relative; }
-        #waBtn { background: #25D366; color: white; display: none; margin-top: 20px; text-decoration: none; padding: 15px; border-radius: 50px; font-weight: bold; cursor: pointer; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Please Say Yes? 🥺</title>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+body { background-color: #ffdeeb; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; overflow: hidden; touch-action: none; }
+#timer { color: #e91e63; font-weight: bold; margin-bottom: 10px; font-size: 0.9rem; background: white; padding: 5px 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+#card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; width: 85%; max-width: 350px; z-index: 10; }
+img { width: 100%; max-width: 180px; border-radius: 15px; margin-bottom: 10px; }
+h1 { color: #e91e63; font-size: 1.3rem; margin: 10px 0; }
+#persuasion { color: #666; font-size: 0.85rem; font-style: italic; min-height: 45px; display: flex; align-items: center; justify-content: center; padding: 0 10px; }
+.buttons { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; min-height: 120px; }
+button { padding: 12px 20px; font-size: 1rem; font-weight: bold; border: none; border-radius: 50px; cursor: pointer; transition: transform 0.1s; }
+#yesBtn { background: #4caf50; color: white; z-index: 1000; }
+#noBtn { background: #f44336; color: white; position: relative; }
+#waBtn { background: #25D366; color: white; display: none; margin-top: 20px; text-decoration: none; padding: 15px; border-radius: 50px; font-weight: bold; cursor: pointer; }
+</style>
 </head>
 <body>
-
-    <div id="timer">Loading timer...</div>
-
-    <div id="card">
-        <img id="gif" src="giphy.gif">
-        <h1 id="question">Will you be my Valentine?</h1>
-        <p id="persuasion">I have something to ask you...</p>
-        
-        <div class="buttons" id="mainButtons">
-            <button id="yesBtn">Yes!</button>
-            <button id="noBtn">No</button>
-        </div>
-
-        <div id="waBtn">Let Vinnie Know! 📲</div>
+<div id="timer">Loading timer...</div>
+<div id="card">
+<img id="gif" src="giphy.gif">
+<h1 id="question">Will you be my Valentine?</h1>
+<p id="persuasion">I have something to ask you...</p>
+<div class="buttons" id="mainButtons">
+<button id="yesBtn">Yes!</button>
+<button id="noBtn">No</button>
+</div>
+<div id="waBtn">Let Vinnie Know! 📲</div>
+</div>
+<audio id="pleaseSound" src="PLEASE SPEED I NEED THIS Sound Effect(MP3_160K).mp3"></audio>
+<audio id="successSound" src="https://www.myinstants.com/media/sounds/tada.mp3"></audio>
+<script>
+const params = new URLSearchParams(window.location.search);
+const code = params.get('code');
+let her = "Special Someone", him = "Vinnie", phone = "";
+if (code) {
+try {
+const decoded = JSON.parse(atob(code));
+her = decoded.to; him = decoded.from; phone = decoded.tel || "";
+} catch(e) { console.error("Code error"); }
+} else {
+window.location.href = "index.html";
+}
+function updateTimer() {
+const now = new Date().getTime();
+const target = new Date("Feb 14, 2026 00:00:00").getTime();
+const diff = target - now;
+if (diff < 0) { document.getElementById("timer").innerText = "It's Valentine's Day! ❤️"; return; }
+const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+const s = Math.floor((diff % (1000 * 60)) / 1000);
+document.getElementById("timer").innerText = d + "d " + h + "h " + m + "m " + s + "s until Valentine's 🌹";
+}
+setInterval(updateTimer, 1000);
+updateTimer();
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const waBtn = document.getElementById("waBtn");
+const msg = document.getElementById("persuasion");
+const audio = document.getElementById("pleaseSound");
+let scale = 1, count = 0;
+const pityList = [
+"Are you sure? 🥺", "Really sure? 🌹", "Think again! ✨", "Please? 🥺", 
+"I'll be so sad... 😢", "Pretty please? 🍒", "Don't break my heart! 💔",
+"I'll buy you chocolate! 🍫", "I'll be your best Valentine! 🌈",
+"I'm on my knees! 🙇‍♂️", "I'll make you coffee! ☕", "Just one 'Yes'? ☝️",
+"I'll give you my last fry! 🍟", "You're the only one! ❤️", 
+"Is there a 0.1% chance? 🔢", "I'll wait forever... ⏳", "Please have mercy! ⛪",
+"Just click the green one! 🟢", "I'm running out of words! 😂", "Wait, don't go! 🏃‍♂️",
+"I practiced this for days! 🎤", "Look at the cat, it's sad too! 🐱", "Don't be mean! 😠",
+"I'll do your laundry! 🧺", "I'll cook for you! 🍳", "I'll let you pick the movie! 🎬",
+"I'll be the best ever! 🏆", "You're my favorite! 🌟", "I'm shivering! 😰",
+"My heart is beating fast! 💓", "Is it my hair? 💇‍♂️", "Is it my jokes? 🤡",
+"I'll stop making dad jokes! 🙊", "Embu is cold without you! 🏔️", "I'll give you a massage! 💆‍♀️",
+"I'll take you on dates! 🕯️", "You're tough to get! 😎", "I like a challenge! 🥊",
+"Don't leave me on read! 💬", "I'm almost at 50 dodges! 📈", "The Yes button is so big! ✨",
+"Click it for Vinnie Digital! 🚀", "I'll be your tech support! 💻", "Just one chance? 🥺",
+"I promise to make you happy! 🥰", "Almost there... 🏁", "Say yes already! 😂", 
+"Fine, I'll ask again! 🔄", "Just do it! ✔️", "You know you want to! 😏"
+];
+function move() {
+audio.currentTime = 0;
+audio.play().catch(function() {});
+const yesRect = yesBtn.getBoundingClientRect();
+let x, y, over;
+do {
+x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+over = (x > yesRect.left - 50 && x < yesRect.right + 50 && y > yesRect.top - 50 && y < yesRect.bottom + 50);
+} while (over);
+noBtn.style.position = "fixed";
+noBtn.style.left = x + "px";
+noBtn.style.top = y + "px";
+if(count < pityList.length) msg.innerText = pityList[count++];
+scale += 0.35;
+yesBtn.style.transform = "scale(" + scale + ")";
+}
+noBtn.addEventListener("touchstart", function(e) { e.preventDefault(); move(); });
+noBtn.addEventListener("mouseover", move);
+yesBtn.addEventListener("click", function() {
+document.getElementById("successSound").play();
+confetti({ particleCount: 200, spread: 80 });
+document.getElementById("question").innerText = "Yay! See you on the 14th! ❤️";
+document.getElementById("gif").src = "giphy (1).gif";
+document.getElementById("mainButtons").style.display = "none";
+waBtn.style.display = "block";
+msg.innerText = "Best decision ever! 😍";
+});
+waBtn.addEventListener("click", function() {
+if (phone.trim() !== "") {
+const waMsg = encodeURIComponent("Hi " + him + "! I just clicked YES on your Valentine page! ❤️");
+window.location.href = "https://wa.me/" + phone + "?text=" + waMsg;
+} else {
+alert("Seems like " + him + " is unreachable via our network. If you would like to confirm to him, text him back through your means of communication.");
+}
+});
+</script>
+</body>
+</html>
     </div>
 
     <audio id="pleaseSound" src="PLEASE SPEED I NEED THIS Sound Effect(MP3_160K).mp3"></audio>
