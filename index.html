@@ -1,41 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Link Creator | Vinnie Digital Hub</title>
-    <style>
-        body { background: #fff5f8; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .panel { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; width: 350px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button { background: #e91e63; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; }
-        .hint { font-size: 0.7rem; color: #999; margin-top: 5px; display: block; }
-    </style>
+<meta charset="UTF-8">
+<title>Link Creator | Vinnie Digital Hub</title>
+<style>
+body { background: #fff5f8; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+.panel { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; width: 350px; }
+input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+button { background: #e91e63; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; }
+</style>
 </head>
 <body>
-    <div class="panel">
-        <h2 style="color: #e91e63;">Vinnie Digital Hub</h2>
-        <input type="text" id="her" placeholder="Her Name (e.g. Millie)">
-        <input type="text" id="him" placeholder="Your Name (e.g. Vinnie)">
-        <input type="text" id="phone" placeholder="WhatsApp (Optional e.g. 2547...)">
-        <button onclick="makeLink()">Generate Link</button>
-        <span class="hint">Link will be copied to clipboard!</span>
-    </div>
-
-    <script>
-        function makeLink() {
-            const h = document.getElementById('her').value;
-            const m = document.getElementById('him').value;
-            const p = document.getElementById('phone').value;
-            if(!h || !m) return alert("Please enter both names!");
-
-            const data = btoa(JSON.stringify({ to: h, from: m, tel: p }));
-            const path = window.location.href.replace('index.html', 'valentine.html');
-            const final = `${path}?code=${data}`;
-            
-            navigator.clipboard.writeText(final);
-            alert("Secret link created and copied!");
-        }
-    </script>
+<div class="panel">
+<h2>Vinnie Digital Hub</h2>
+<input type="text" id="her" placeholder="Her Name">
+<input type="text" id="him" placeholder="Your Name">
+<input type="text" id="phone" placeholder="WhatsApp (Optional e.g. 2547...)">
+<button onclick="make()">Generate Link</button>
+</div>
+<script>
+function make() {
+const h = document.getElementById('her').value;
+const m = document.getElementById('him').value;
+const p = document.getElementById('phone').value;
+if(!h || !m) return alert("Enter names!");
+const data = btoa(JSON.stringify({ to: h, from: m, tel: p }));
+const path = window.location.origin + window.location.pathname.replace('index.html', '') + 'valentine.html';
+const final = path + '?code=' + data;
+navigator.clipboard.writeText(final);
+alert("Link copied! Send it now.");
+}
+</script>
 </body>
 </html>
+    
 
