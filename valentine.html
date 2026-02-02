@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Message for You</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body { background: #ffdeeb; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: 'Arial', sans-serif; overflow: hidden; touch-action: manipulation; }
+        #card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; max-width: 450px; width: 85%; z-index: 10; }
+        img { width: 220px; height: 220px; object-fit: cover; border-radius: 15px; }
+        h1 { color: #e91e63; font-size: 1.5rem; margin: 15px 0; }
+        #status-text { color: #ff69b4; font-weight: bold; margin-bottom: 10px; display: block; }
+        #persuasion-msg { color: #666; font-style: italic; font-size: 0.9rem; min-height: 25px; margin: 10px 0; }
+        .buttons { display: flex; justify-content: center; align-items: center; gap: 20px; min-height: 120px; margin-top: 20px; }
+        button { padding: 15px 25px; font-size: 1.1rem; font-weight: bold; border: none; border-radius: 50px; cursor: pointer; transition: transform 0.2s; }
+        #yesBtn { background: #4caf50; color: white; }
+        #noBtn { background: #f44336; color: white; position: relative; }
+    </style>
+</head>
+<body>
+
+    <div id="card">
+        <span id="status-text">Hi!</span>
+        <img id="main-gif" src="https://media.tenor.com/97yC5YwVf_MAAAAi/cat-cute.gif">
+        <h1 id="question">Will you be my Valentine?</h1>
+        <p id="persuasion-msg">I have a special question...</p>
+        <div class="buttons">
+            <button id="yesBtn">Yes!</button>
+            <button id="noBtn">No</button>
+        </div>
+    </div>
+
+    <audio id="tada" src="https://www.myinstants.com/media/sounds/tada.mp3"></audio>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const her = params.get('to') || "Special Someone";
+        const him = params.get('from') || "Me";
+
+        document.getElementById('status-text').innerText = `Hi ${her}, ${him} is asking...`;
+
+        const noBtn = document.getElementById("noBtn");
+        const yesBtn = document.getElementById("yesBtn");
+        const msg = document.getElementById("persuasion-msg");
+        const gif = document.getElementById("main-gif");
+
+        let scale = 1;
+        let noClicks = 0;
+
+        const tricks = [
+            "Are you sure? 🥺", "Really sure? 🌹", "Think again! ✨", "Don't be like that! 😭",
+            "I'll be heartbroken... 💔", "I'm gonna cry! 😢", "You're breaking my heart. 🥀",
+            "But we'd be so cute! 🐱", "Just one chance? 🌈", "I'll buy you chocolates! 🍫",
+            "Please? 🥺", "Pretty please with a cherry on top? 🍒", "I'll never ask again! (Lie)",
+            "You're making this difficult... 😅", "Is that your final answer? 🧐", 
+            "Look how big the Yes button is! 🟢", "Resistance is futile! 🤖", 
+            "I'm actually quite charming! 😎", "Give it a thought! 🧠", "Say Yes and I'll stop! 🛑"
+        ];
+
+        function persuade() {
+            // Move No Button
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            noBtn.style.position = "fixed";
+            noBtn.style.left = x + "px";
+            noBtn.style.top = y + "px";
+
+            // Update Text
+            if(noClicks < tricks.length) {
+                msg.innerText = tricks[noClicks];
+                noClicks++;
+            } else {
+                msg.innerText = "Okay, the No button is just a prank now! 😂";
+            }
+
+            // Grow Yes Button (Sunk Cost Fallacy)
+            scale += 0.3;
+            yesBtn.style.transform = `scale(${scale})`;
+        }
+
+        noBtn.addEventListener("mouseover", persuade);
+        noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); persuade(); });
+
+        yesBtn.addEventListener("click", () => {
+            document.getElementById("tada").play();
+            confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 } });
+            document.getElementById("question").innerHTML = `Yay! See you on the 14th, ${her}! ❤️`;
+            msg.innerText = "You made the best decision ever!";
+            gif.src = "https://media.tenor.com/B9_S997v_mYAAAAi/happy-cat-cat.gif";
+            noBtn.style.display = "none";
+            yesBtn.style.transform = "scale(1)";
+        });
+    </script>
+</body>
+</html>
