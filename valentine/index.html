@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vinnie Digital Hub | Valentine Link Creator</title>
+    <style>
+        body { background: #fff5f8; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .admin-panel { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(233, 30, 99, 0.1); text-align: center; max-width: 400px; width: 90%; }
+        h2 { color: #e91e63; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #ffc1d3; border-radius: 10px; box-sizing: border-box; font-size: 1rem; }
+        button { background: #e91e63; color: white; border: none; padding: 15px 30px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; transition: 0.3s; }
+        button:hover { background: #c2185b; }
+        #output { margin-top: 20px; word-break: break-all; color: #ad1457; font-weight: bold; font-size: 0.9rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="admin-panel">
+        <h2>Vinnie Digital Hub</h2>
+        <p>Create a personalized surprise link.</p>
+        <input type="text" id="herName" placeholder="Crush's Name (e.g. Sarah)">
+        <input type="text" id="yourName" placeholder="Your Name (e.g. Vinnie)">
+        <button onclick="generateLink()">Generate & Copy Secret Link</button>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        function generateLink() {
+            const her = encodeURIComponent(document.getElementById('herName').value);
+            const you = encodeURIComponent(document.getElementById('yourName').value);
+            if(!her || !you) return alert("Enter both names!");
+            
+            // This detects your domain/folder automatically
+            const baseUrl = window.location.href.replace('index.html', 'valentine.html');
+            const finalUrl = `${baseUrl}?to=${her}&from=${you}`;
+            
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerText = finalUrl;
+            
+            navigator.clipboard.writeText(finalUrl);
+            alert("Link Copied! Send this to her.");
+        }
+    </script>
+</body>
+  </html>
+  
