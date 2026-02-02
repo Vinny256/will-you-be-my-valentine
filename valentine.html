@@ -2,38 +2,118 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Message for You</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Please Say Yes? 🥺</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        body { background: #ffdeeb; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: 'Arial', sans-serif; overflow: hidden; touch-action: manipulation; }
-        #card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 85%; }
-        img { width: 220px; border-radius: 15px; }
-        h1 { color: #e91e63; font-size: 1.5rem; }
-        #persuasion-msg { color: #666; font-style: italic; min-height: 40px; }
-        .buttons { display: flex; justify-content: center; align-items: center; gap: 20px; min-height: 100px; position: relative; }
-        button { padding: 15px 25px; font-size: 1.1rem; font-weight: bold; border: none; border-radius: 50px; cursor: pointer; transition: transform 0.2s; }
-        #yesBtn { background: #4caf50; color: white; z-index: 100; }
+        body { background-color: #ffdeeb; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: 'Arial', sans-serif; overflow: hidden; touch-action: none; }
+        #card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; width: 85%; max-width: 380px; z-index: 10; transition: all 0.3s; }
+        img { width: 100%; max-width: 200px; border-radius: 15px; margin-bottom: 15px; }
+        h1 { color: #e91e63; font-size: 1.4rem; margin: 10px 0; }
+        #persuasion { color: #666; font-size: 0.9rem; font-style: italic; min-height: 50px; display: flex; align-items: center; justify-content: center; padding: 0 10px; }
+        .buttons { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; min-height: 120px; }
+        button { padding: 15px 25px; font-size: 1.1rem; font-weight: bold; border: none; border-radius: 50px; cursor: pointer; transition: transform 0.1s ease-out; }
+        #yesBtn { background: #4caf50; color: white; z-index: 1000; }
         #noBtn { background: #f44336; color: white; position: relative; }
     </style>
 </head>
 <body>
+
     <div id="card">
-        <h3 id="header-text" style="color: #ff69b4;">Hi!</h3>
-        <img id="main-gif" src="https://media.tenor.com/97yC5YwVf_MAAAAi/cat-cute.gif">
+        <p id="header" style="color: #ff69b4; font-weight: bold; font-size: 1.1rem;"></p>
+        <img id="gif" src="https://media.tenor.com/97yC5YwVf_MAAAAi/cat-cute.gif">
         <h1 id="question">Will you be my Valentine?</h1>
-        <p id="persuasion-msg">I have a question for you...</p>
+        <p id="persuasion">I’ve been waiting all day to ask you this...</p>
         <div class="buttons">
             <button id="yesBtn">Yes!</button>
             <button id="noBtn">No</button>
         </div>
     </div>
-    <audio id="sound" src="https://www.myinstants.com/media/sounds/tada.mp3"></audio>
+
+    <audio id="sadSound" src="https://www.myinstants.com/media/sounds/mew.mp3"></audio>
+    <audio id="successSound" src="https://www.myinstants.com/media/sounds/tada.mp3"></audio>
 
     <script>
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
-        let her = "Special Someone";
+        let her = "Special Someone", him = "Vinnie";
+
+        if (code) {
+            try {
+                const decoded = JSON.parse(atob(code));
+                her = decoded.to; him = decoded.from;
+                document.getElementById('header').innerText = `Hi ${her}, ${him} is asking...`;
+            } catch(e) { console.log("Link error"); }
+        }
+
+        const noBtn = document.getElementById("noBtn");
+        const yesBtn = document.getElementById("yesBtn");
+        const msg = document.getElementById("persuasion");
+        const sadAudio = document.getElementById("sadSound");
+        let scale = 1, count = 0;
+        
+        const pityList = [
+            "Are you sure? 🥺", "Really sure? 🌹", "Think again! ✨", "Don't do this to me... 😭",
+            "My heart is fragile! 💔", "I'm gonna be so sad... 😢", "Is that your final answer? 🧐",
+            "I'll buy you all the snacks! 🍫", "I'll be your best Valentine ever! 🌈", "Please? 🥺",
+            "Pretty please? 🍒", "I'm literally shaking right now... 😰", "Don't break my heart! 🥀",
+            "I thought we had something special... ☁️", "I'll cry, I promise! 😭", "Look at my face 😿",
+            "You're making me go viral for being rejected! 📱", "Even the cat is sad now... 🐱",
+            "I've practiced this all week! 🎤", "Don't let my efforts go to waste! 🏗️",
+            "I'll do your homework! (Maybe) 📚", "I'll make you coffee! ☕", "Just one 'Yes'? ☝️",
+            "You're the only one I want! ❤️", "My day will be ruined... 🌧️", "I'm losing hope... 🕯️",
+            "Is there a chance? 0.1%? 🔢", "I'll wait forever... ⏳", "Okay, now you're just being mean! 😠",
+            "I'm calling my mom to tell her you said no... 📞", "The Yes button is much more friendly! 🟢",
+            "Every 'No' makes me smaller... 🤏", "Please have mercy! ⛪", "I'm on my knees! 🙇‍♂️",
+            "Don't leave me on read IRL! 💬", "I'll give you my last fry! 🍟", "You're my favorite human! 🌟",
+            "Why are you running? 🏃‍♀️", "I'm actually quite nice! 😇", "I'll let you pick the movie! 🎬",
+            "I'll send you memes every day! 📈", "Just click the green one... please... 😭",
+            "I'm running out of things to say! 💨", "Error 404: Heart not found 🚫",
+            "System Crash: Too much rejection 🖥️", "I'll start singing if you don't say yes! 🎶",
+            "I'm almost at 50 clicks, please stop! 😂", "You're tough to get, I like that! 😎",
+            "Okay, final, final, final chance? 🏁", "Just say yes and make me the happiest guy in Embu! ❤️"
+        ];
+
+        function move() {
+            // Play sad sound
+            sadAudio.currentTime = 0;
+            sadAudio.play().catch(() => {});
+
+            // Random position
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            noBtn.style.position = "fixed";
+            noBtn.style.left = x + "px";
+            noBtn.style.top = y + "px";
+
+            // Update persuasion text
+            if(count < pityList.length) {
+                msg.innerText = pityList[count++];
+            } else {
+                msg.innerText = "Okay, I'm out of words. Just click Yes already! 😂";
+            }
+
+            // Grow Yes button
+            scale += 0.4;
+            yesBtn.style.transform = `scale(${scale})`;
+        }
+
+        noBtn.addEventListener("mouseover", move);
+        noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); move(); });
+
+        yesBtn.addEventListener("click", () => {
+            document.getElementById("successSound").play();
+            confetti({ particleCount: 250, spread: 100, origin: { y: 0.6 } });
+            document.getElementById("question").innerText = `Yay! See you on the 14th, ${her}! ❤️`;
+            msg.innerText = "Best choice ever! I'm so happy! 😍";
+            document.getElementById("gif").src = "https://media.tenor.com/B9_S997v_mYAAAAi/happy-cat-cat.gif";
+            noBtn.style.display = "none";
+            yesBtn.style.transform = "scale(1)";
+            yesBtn.innerText = "SUCCESS! ✔️";
+        });
+    </script>
+</body>
+</html>
         let him = "Me";
 
         // Decode the secret names
